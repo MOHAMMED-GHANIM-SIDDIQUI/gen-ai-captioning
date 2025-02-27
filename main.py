@@ -2,13 +2,12 @@ import streamlit as st
 import numpy as np
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
+from tensorflow.keras.preprocessing.image import load_img, img_to_array  # Correct import for image processing
 import matplotlib.pyplot as plt
 import pickle
 
-
 # Function to generate and display caption
-def generate_and_display_caption(image_path, model_path, tokenizer_path, feature_extractor_path, max_length=34,img_size=224):
+def generate_and_display_caption(image_path, model_path, tokenizer_path, feature_extractor_path, max_length=34, img_size=224):
     # Load the trained models and tokenizer
     caption_model = load_model(model_path)
     feature_extractor = load_model(feature_extractor_path)
@@ -45,7 +44,6 @@ def generate_and_display_caption(image_path, model_path, tokenizer_path, feature
     plt.title(caption, fontsize=16, color='blue')
     st.pyplot(plt)  # Display image in Streamlit
 
-
 # Streamlit app interface
 def main():
     st.title("Image Caption Generator")
@@ -66,7 +64,7 @@ def main():
 
         # Generate caption and display image with caption
         generate_and_display_caption("uploaded_image.jpg", model_path, tokenizer_path, feature_extractor_path)
-    st.markdown( "**Created by MOHAMMED GHANIM SIDIQUI**" )
+    st.markdown(" **Created by MOHAMMED GHANIM SIDIQUI** ")
 
 if __name__ == "__main__":
     main()
