@@ -5,16 +5,11 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import load_img, img_to_array  # Correct import for image processing
 import matplotlib.pyplot as plt
 import pickle
+import os
+import tempfile
 
 # Function to generate and display caption
-def generate_and_display_caption(image_path, model_path, tokenizer_path, feature_extractor_path, max_length=34, img_size=224):
-    # Load the trained models and tokenizer
-    caption_model = load_model(model_path)
-    feature_extractor = load_model(feature_extractor_path)
-
-    with open(tokenizer_path, "rb") as f:
-        tokenizer = pickle.load(f)
-
+def generate_and_display_caption(image_path, model, tokenizer, feature_extractor, max_length=34, img_size=224):
     # Preprocess the image
     img = load_img(image_path, target_size=(img_size, img_size))
     img = img_to_array(img) / 255.0  # Normalize pixel values
@@ -26,7 +21,7 @@ def generate_and_display_caption(image_path, model_path, tokenizer_path, feature
     for i in range(max_length):
         sequence = tokenizer.texts_to_sequences([in_text])[0]
         sequence = pad_sequences([sequence], maxlen=max_length)
-        yhat = caption_model.predict([image_features, sequence], verbose=0)
+        yhat = model.predict([image_features, sequence], verbose=0)
         yhat_index = np.argmax(yhat)
         word = tokenizer.index_word.get(yhat_index, None)
         if word is None:
@@ -53,17 +48,23 @@ def main():
     uploaded_image = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
     if uploaded_image is not None:
-        # Save the uploaded image temporarily
-        with open("uploaded_image.jpg", "wb") as f:
-            f.write(uploaded_image.getbuffer())
+        # Save the uploaded image temporarily in the /tmp directory
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmpfile:
+            tmpfile.write(uploaded_image.getbuffer())
+            uploaded_image_path = tmpfile.name
 
-        # Paths for the saved models and tokenizer
-        model_path = "models/model.keras"  # Replace with the actual path
-        tokenizer_path = "models/tokenizer.pkl"  # Replace with the actual path
-        feature_extractor_path = "models/feature_extractor.keras"  # Replace with the actual path
+        # Upload the model files (This can be optimized as well)
+        model = load_model("models/model.keras")  # Make sure this path is correct for Streamlit
+        tokenizer_path = "models/tokenizer.pkl"  # Ensure this path is correct or upload via Streamlit
+        feature_extractor = load_model("models/feature_extractor.keras")  # Same for feature extractor
+
+        # Load the tokenizer using pickle
+        with open(tokenizer_path, "rb") as f:
+            tokenizer = pickle.load(f)
 
         # Generate caption and display image with caption
-        generate_and_display_caption("uploaded_image.jpg", model_path, tokenizer_path, feature_extractor_path)
+        generate_and_display_caption(uploaded_image_path, model, tokenizer, feature_extractor)
+        
     st.markdown(" **Created by MOHAMMED GHANIM SIDIQUI** ")
 
 if __name__ == "__main__":
