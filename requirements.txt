@@ -22,7 +22,6 @@ idna==3.10
 Jinja2==3.1.5
 jsonschema==4.23.0
 jsonschema-specifications==2024.10.1
-keras==3.8.0
 kiwisolver==1.4.8
 libclang==18.1.1
 Markdown==3.7
@@ -33,12 +32,12 @@ mdurl==0.1.2
 ml-dtypes==0.4.1
 namex==0.0.8
 narwhals==1.28.0
-numpy==2.0.2
+numpy==1.24.3
 opt_einsum==3.4.0
 optree==0.14.0
 packaging==24.2
 pandas==2.2.3
-pillow==11.1.0
+pillow==11.1.0  # Ensure pillow is included for image handling
 protobuf==5.29.3
 pyarrow==19.0.1
 pydeck==0.9.1
@@ -56,10 +55,7 @@ streamlit==1.42.2
 tenacity==9.0.0
 tensorboard==2.18.0
 tensorboard-data-server==0.7.2
-tensorflow==2.18.0
-tensorflow-io-gcs-filesystem==0.31.0
-tensorflow_intel==2.18.0
-tensorflow_keras==0.1
+tensorflow==2.18.0  # Ensure compatibility with Keras
 termcolor==2.5.0
 toml==0.10.2
 tornado==6.4.2
