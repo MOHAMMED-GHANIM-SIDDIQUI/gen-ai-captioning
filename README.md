@@ -31,15 +31,24 @@ flowchart LR
 
 ```text
 gen-ai-captioning/
-|-- main.py
+|-- main.py                  # Streamlit entrypoint
 |-- requirements.txt
 |-- README.md
 |-- .gitignore
-`-- models/
+|-- models/
     |-- model.keras
     |-- feature_extractor.keras
-    |-- tokenizer.pkl
-    `-- flickr8k-image-captioning-using-cnns-lstms (1) (1).ipynb
+    `-- tokenizer.pkl
+|-- notebooks/
+|   `-- flickr8k_image_captioning_cnn_lstm.ipynb
+|-- src/
+|   `-- image_captioning/
+|       |-- app.py           # UI orchestration
+|       |-- captioner.py     # artifact loading and decoding logic
+|       `-- config.py        # artifact paths and decoding settings
+|-- tests/
+|   `-- test_artifacts.py
+`-- .github/workflows/ci.yml
 ```
 
 ## Quick Start
@@ -80,6 +89,23 @@ These artifacts are committed in the current repository for demonstration. For a
 - Model and tokenizer loading is cached with `st.cache_resource`.
 - Matplotlib figures are closed after rendering.
 - Dependency file was reduced to direct runtime dependencies.
+- Captioning logic is separated into a reusable package under `src/`.
+- CI verifies the committed artifact contract.
+
+## Development Workflow
+
+```bash
+set PYTHONPATH=src
+pytest -q
+python -m compileall main.py src
+streamlit run main.py
+```
+
+On macOS/Linux:
+
+```bash
+export PYTHONPATH=src
+```
 
 ## Roadmap
 
